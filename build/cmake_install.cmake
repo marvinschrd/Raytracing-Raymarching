@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/lorna/SAE_Institute/CUDA_RayMarching
+# Install script for directory: C:/SAE/2eme/CUDA/CUDA_RayMarching
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -40,5 +40,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/lorna/SAE_Institute/CUDA_RayMarching/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/SAE/2eme/CUDA/CUDA_RayMarching/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
