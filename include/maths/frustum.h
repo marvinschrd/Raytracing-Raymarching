@@ -22,20 +22,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+#include <array>
 
-#include "maths/vector4.h"
-#include "maths/vector3.h"
+#include "maths/matrix4.h"
+#include "maths/sphere.h"
+#include "maths/aabb3.h"
+#include "maths/plane.h"
 
-class Material {
+namespace maths {
+	
+class Frustum {
 public:
-	Material() = default;
-	Material(float reflexion_index, maths::Vector3f color) : reflexion_index_(reflexion_index), color_(color) {}
-
-	maths::Vector3f color() const { return color_; }
-	float reflexion_index() const { return reflexion_index_; }
-	void set_color(const maths::Vector3f& color) { color_ = color; }
-
+	Frustum() = default;
+	// Calculate frustum from the given informations from the camera each time it is called
+	void calculate_frustum(Vector3f direction, Vector3f position, Vector3f right, 
+		Vector3f up, float near_plane_distance, float far_plane_distance, 
+		degree_t fov_x, radian_t fov_y);
+	// Check if a sphere is inside the frustum
+	bool contains(const Sphere& sphere);
+	// Check if a AABB is inside the frustum
+	bool contains(const AABB3& aabb);
+	// Check if a point is inside the frustum
+	bool contains(const Vector3f& point);
+	
 private:
-	maths::Vector3f color_{ 255.0f,255.0f,255.0f };
-	float reflexion_index_ = 1.0f;
+	std::array<Plane, 6> planes_;
+	enum Planes {NEAR, FAR, LEFT, RIGHT, TOP, BOTTOM};
 };
+	
+} // namespace maths
