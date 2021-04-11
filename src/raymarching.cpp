@@ -227,7 +227,8 @@ namespace raytracing {
 				if(dist < 0.0001f)
 				{
 					hit_material = spheres_[j].material();
-					hit_infos.normal = ray.PointInRay(depth) - spheres_[j].center().Normalized();
+					hit_infos.hit_position = p;
+					hit_infos.normal =  maths::Vector3f(hit_infos.hit_position - spheres_[j].center()).Normalized();
 					return depth;
 				}
 				depth += dist;
@@ -252,8 +253,20 @@ namespace raytracing {
 		{
 			return background_color_;
 		}
+
+		//Compute the normal or direction of the light
+		maths::Vector3f light_normal(light_.position - hit_infos.hit_position);
+		light_normal.Normalize();
+
+
+		// Calculate how much light is the point getting
+		float light_value = maths::Vector3f::Dot(hit_infos.normal, light_normal);
+		if (light_value < 0.0f)
+		{
+			light_value = 0.0f;
+		}
 		
-		return hit_material.color();
+		return hit_material.color() * light_value;
 	}
 
 }// namespace raytracing
