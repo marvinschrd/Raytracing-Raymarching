@@ -25,7 +25,7 @@ TEST(Raytracing, Color_Output)
 	PointLight light;
 	std::vector<maths::Plane> planes;
 
-	Raytracer raytracer;
+	RayTracer raytracer;
 	raytracer.SetScene(spheres, planes, light, heigth, width, fov, bias);
 	raytracer.Render();
 
@@ -76,7 +76,7 @@ TEST(Raytracing, Correct_Depth_Rendering)
 	PointLight light;
 	std::vector<maths::Plane> planes;
 
-	Raytracer raytracer;
+	RayTracer raytracer;
 	raytracer.SetScene(spheres, planes, light, heigth, width, fov, bias);
 
 	maths::Vector3f ray_origin = maths::Vector3f(0.0f, 0.0f, 0.0f);
@@ -122,7 +122,7 @@ TEST(Raytracing, ShadowRay)
 
 	std::vector<maths::Plane> planes;
 
-	Raytracer raytracer;
+	RayTracer raytracer;
 	raytracer.SetScene(spheres, planes, light, heigth, width, fov, bias);
 
 	//Shadow ray has an origin just on the left of the sphere,
@@ -180,7 +180,7 @@ TEST(Raytracing, Raytracing_ImageOutput)
 
 	std::vector<maths::Plane> planes;
 		
-	Raytracer raytracer;
+	RayTracer raytracer;
 	raytracer.SetScene(spheres, planes, light, heigth, width, fov, bias);
 	raytracer.Render();
 }

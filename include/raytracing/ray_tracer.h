@@ -43,9 +43,9 @@ struct HitInfos
 	float distance;
 };
 
-class Raytracer {
+class RayTracer {
 public:
-	Raytracer() = default;
+	RayTracer() = default;
 	//Set bases value and variable for raytracer rendering
 	void SetScene(
 		std::vector<maths::Sphere>& spheres,

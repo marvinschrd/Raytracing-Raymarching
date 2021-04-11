@@ -49,6 +49,10 @@ public:
         return 4 / 3 * pi * (radius_ * radius_ * radius_);
     }
 
+	float sdf(Vector3f point) {
+        return (point - center_).Magnitude() - radius_;
+    }
+
     void set_radius(float radius) { radius_ = radius; }
     Vector3f center() const { return center_; }
     float radius() const { return radius_; }

@@ -43,7 +43,7 @@ inline
 	return rgb_value;
 	}
 
-bool Raytracer::ObjectIntersect(
+bool RayTracer::ObjectIntersect(
 	maths::Ray3& ray,
 	Material& hit_material, 
 	HitInfos& hit_info, 
@@ -87,7 +87,7 @@ bool Raytracer::ObjectIntersect(
 	return false;
 }
 
-maths::Vector3f Raytracer::RayCast(
+maths::Vector3f RayTracer::RayCast(
 	const maths::Vector3f& origin,
 	const maths::Vector3f& ray_direction, 
 	const int& depth)
@@ -139,7 +139,7 @@ maths::Vector3f Raytracer::RayCast(
 	}
 }
 
-void Raytracer::Render()
+void RayTracer::Render()
 {
 #pragma omp parallel for
 	for (int i = 0; i < height_; ++i)
@@ -159,7 +159,7 @@ void Raytracer::Render()
 	WriteImage();
 }
 
-void Raytracer::WriteImage()
+void RayTracer::WriteImage()
 {
 	std::ofstream ofs("./image.ppm", std::ios::out | std::ios::binary);
 	ofs << "P6\n" << width_ << " " << height_ << "\n255\n";
@@ -173,7 +173,7 @@ void Raytracer::WriteImage()
 	ofs.close();
 }
 
-bool Raytracer::ShadowRay(
+bool RayTracer::ShadowRay(
 	const maths::Vector3f& hit_position, 
 	const maths::Vector3f& hit_normal, 
 	const maths::Vector3f& light_normal)
@@ -194,7 +194,7 @@ bool Raytracer::ShadowRay(
 	return true;
 }
 
-maths::Vector3f Raytracer::Reflect(
+maths::Vector3f RayTracer::Reflect(
 	const maths::Vector3f& ray_direction, 
 	const maths::Vector3f& hit_normal)
 {
