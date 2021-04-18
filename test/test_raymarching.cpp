@@ -45,7 +45,7 @@ TEST(Raymarching, Image_output)
 	//spheres.push_back(sphere4);
 	spheres.push_back(sphere3);
 	spheres.push_back(sphere1);
-	//spheres.push_back(sphere5);
+	spheres.push_back(sphere5);
 
 	std::vector<maths::Plane> planes;
 

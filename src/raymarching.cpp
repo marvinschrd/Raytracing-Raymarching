@@ -182,13 +182,19 @@ namespace raytracing {
 		maths::Ray3 shadow_ray(shadow_ray_origin, light_normal);
 		Material tmp_material;
 		HitInfos shadow_hit_info;
-		float tmp_distance;
 
-		if (ObjectIntersect(shadow_ray, tmp_material, shadow_hit_info, tmp_distance))
+		//if (ObjectIntersect(shadow_ray, tmp_material, shadow_hit_info, tmp_distance))
+		//{
+		//	// Return that the point is in the shadow
+		//	return false;
+		//}
+
+		float tmp_distance = ClosestDistance(shadow_ray, shadow_hit_info, tmp_material);
+		if(tmp_distance != max_distance_)
 		{
-			// Return that the point is in the shadow
 			return false;
 		}
+		
 		// Return that the point is in the light
 		return true;
 	}
@@ -284,7 +290,10 @@ namespace raytracing {
 			light_value = 0.0f;
 		}
 
-		return hit_material.color() * light_value;
+		//Compute shadow ray to check if point is in shadow
+		 bool in_light = ShadowRay(hit_infos.hit_position, hit_infos.normal, light_normal);
+
+		return hit_material.color() * light_value * in_light;
 	}
 
 	float RayMarcher::SceneSDF(maths::Vector3f position, maths::Sphere& closest_sphere)
