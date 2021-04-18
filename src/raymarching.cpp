@@ -1,18 +1,14 @@
 /*
 MIT License
-
 Copyright (c) 2021 SAE Institute Geneva
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -213,32 +209,54 @@ namespace raytracing {
 
 
 
-	
+
 	float RayMarcher::ClosestDistance(maths::Ray3 ray, HitInfos& hit_infos, Material& hit_material)
 	{
-		float depth = min_distance_;
-		for(int j = 0; j< spheres_.size(); ++j)
+		/*float depth = min_distance_;
+		for (int j = 0; j < spheres_.size(); ++j)
 		{
-			for(int i = 0; i < max_marching_steps_; ++i)
+			for (int i = 0; i < max_marching_steps_; ++i)
 			{
 				maths::Vector3f p = ray.PointInRay(depth);
 				maths::Vector3f q = ray.origin() + ray.direction() * depth;
 				float dist = spheres_[j].sdf(p);
-				if(dist < 0.0001f)
+				if (dist < 0.0001f)
 				{
 					hit_material = spheres_[j].material();
 					hit_infos.hit_position = p;
-					hit_infos.normal =  maths::Vector3f(hit_infos.hit_position - spheres_[j].center()).Normalized();
+					hit_infos.normal = maths::Vector3f(hit_infos.hit_position - spheres_[j].center()).Normalized();
 					return depth;
 				}
 				depth += dist;
-				if(depth >= max_distance_)
+				if (depth >= max_distance_)
 				{
 					return max_distance_;
 				}
 			}
 		}
-			return max_distance_;
+		return max_distance_;*/
+
+		float depth = min_distance_;
+		maths::Sphere closest_sphere;
+		for (int i = 0; i < max_marching_steps_; ++i)
+		{
+			maths::Vector3f p = ray.PointInRay(depth);
+			float dist = SceneSDF(p, closest_sphere);
+
+			if(dist < 0.0001f)
+			{
+				hit_material = closest_sphere.material();
+				hit_infos.hit_position = p;
+				hit_infos.normal = (p - closest_sphere.center()).Normalized();
+				return depth;
+			}
+			depth += dist;
+			if (depth >= max_distance_)
+			{
+				return max_distance_;
+			}
+		}
+		return max_distance_;
 	}
 
 	maths::Vector3f RayMarcher::RayMarching(maths::Vector3f ray_origin, maths::Vector3f ray_direction)
@@ -246,10 +264,10 @@ namespace raytracing {
 		maths::Ray3 ray{ ray_origin,ray_direction };
 		HitInfos hit_infos;
 		Material hit_material;
-		float distance = ClosestDistance(ray,hit_infos,hit_material);
+		float distance = ClosestDistance(ray, hit_infos, hit_material);
 
 		//didn't hit
-		if(distance > max_distance_ - 0.0001f)
+		if (distance > max_distance_ - 0.0001f)
 		{
 			return background_color_;
 		}
@@ -265,12 +283,24 @@ namespace raytracing {
 		{
 			light_value = 0.0f;
 		}
-		
+
 		return hit_material.color() * light_value;
 	}
 
+	float RayMarcher::SceneSDF(maths::Vector3f position, maths::Sphere& closest_sphere)
+	{
+		float dist = 100000.0f;
+		for(int i = 0; i < spheres_.size(); ++i)
+		{
+			float distance = 0.0f;
+			distance = spheres_[i].sdf(position);
+			if(distance < dist)
+			{
+				dist = distance;
+				closest_sphere = spheres_[i];
+			}
+		}
+		return dist;
+	}
+
 }// namespace raytracing
-
-
-
-

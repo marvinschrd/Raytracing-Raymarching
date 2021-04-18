@@ -43,7 +43,7 @@ TEST(Raymarching, Image_output)
 	PointLight light;
 	std::vector<maths::Sphere> spheres;
 	//spheres.push_back(sphere4);
-	//spheres.push_back(sphere3);
+	spheres.push_back(sphere3);
 	spheres.push_back(sphere1);
 	//spheres.push_back(sphere5);
 

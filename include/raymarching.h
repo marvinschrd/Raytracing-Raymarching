@@ -102,6 +102,8 @@ namespace raytracing {
 
 		maths::Vector3f RayMarching(maths::Vector3f ray_origin, maths::Vector3f ray_direction);
 
+		float SceneSDF(maths::Vector3f position, maths::Sphere& closest_sphere);
+
 		std::vector<maths::Vector3f> frameBuffer() const { return frame_buffer_; }
 
 	private:
