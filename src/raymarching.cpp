@@ -265,7 +265,7 @@ namespace raytracing {
 		return max_distance_;
 	}
 
-	maths::Vector3f RayMarcher::RayMarching(maths::Vector3f ray_origin, maths::Vector3f ray_direction)
+	maths::Vector3f RayMarcher::RayMarching(maths::Vector3f ray_origin, maths::Vector3f ray_direction, const int& depth)
 	{
 		maths::Ray3 ray{ ray_origin,ray_direction };
 		HitInfos hit_infos;
@@ -273,7 +273,7 @@ namespace raytracing {
 		float distance = ClosestDistance(ray, hit_infos, hit_material);
 
 		//didn't hit
-		if (distance > max_distance_ - 0.0001f)
+		if (distance > max_distance_ - 0.0001f || depth >=4)
 		{
 			return background_color_;
 		}
@@ -293,7 +293,25 @@ namespace raytracing {
 		//Compute shadow ray to check if point is in shadow
 		 bool in_light = ShadowRay(hit_infos.hit_position, hit_infos.normal, light_normal);
 
-		return hit_material.color() * light_value * in_light;
+
+		 if(in_light)
+		 {
+			 // Point is not in the shadow
+				// Cast reflexion ray recursively to compute reflexion color
+			 const maths::Vector3f reflection_direction = Reflect(ray_direction, hit_infos.normal).Normalized();
+			 const maths::Vector3f reflection_origin(hit_infos.hit_position + hit_infos.normal * bias_);
+			 const maths::Vector3f reflection_color = RayMarching(reflection_origin, reflection_direction, depth + 1);
+			 hit_material.set_color(hit_material.color() * light_value
+				 += reflection_color * hit_material.reflexion_index());
+		 }
+		 else
+		 {
+			 //Point is in the shadow
+			 hit_material.set_color(hit_material.color() * light_value * in_light);
+		 }
+		
+
+		return hit_material.color();
 	}
 
 	float RayMarcher::SceneSDF(maths::Vector3f position, maths::Sphere& closest_sphere)

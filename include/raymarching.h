@@ -100,7 +100,7 @@ namespace raytracing {
 		
 		float ClosestDistance(maths::Ray3 ray, HitInfos& hit_infos, Material& hit_material);
 
-		maths::Vector3f RayMarching(maths::Vector3f ray_origin, maths::Vector3f ray_direction);
+		maths::Vector3f RayMarching(maths::Vector3f ray_origin, maths::Vector3f ray_direction, const int& depth = 0);
 
 		float SceneSDF(maths::Vector3f position, maths::Sphere& closest_sphere);
 
