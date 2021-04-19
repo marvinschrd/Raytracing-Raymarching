@@ -26,7 +26,7 @@ SOFTWARE.
 namespace raytracing {
 
 	inline
-		float clamp(float& rgb_value)
+	float clamp(float& rgb_value)
 	{
 		if (rgb_value > 255.0f)
 		{
@@ -37,102 +37,6 @@ namespace raytracing {
 			rgb_value = 0.0f;
 		}
 		return rgb_value;
-	}
-
-	bool RayMarcher::ObjectIntersect(
-		maths::Ray3& ray,
-		Material& hit_material,
-		HitInfos& hit_info,
-		float& distance)
-	{
-		float max_distance = 1000000.0f;
-		distance = max_distance;
-		for (int i = 0; i < spheres_.size(); ++i)
-		{
-			hit_info.distance = max_distance;
-			// Only render intersection for the nearest sphere,
-			// if distance is smaller than previously
-			if (ray.IntersectSphere(spheres_[i], hit_info.hit_position, hit_info.distance)
-				&& hit_info.distance < distance)
-			{
-				//Set hit info value regarding the object that was hit
-				hit_info.normal = maths::Vector3f(hit_info.hit_position - spheres_[i].center()).Normalized();
-				hit_material = spheres_[i].material();
-				distance = hit_info.distance;
-			}
-		}
-		if (distance != max_distance)
-		{
-			// Means that the ray had an intersection
-			return true;
-		}
-
-		if (planes_.size() != 0)
-		{
-			for (int i = 0; i < planes_.size(); ++i)
-			{
-				if (ray.IntersectPlane(planes_[i], hit_info.hit_position))
-				{
-					hit_info.normal = planes_[i].normal();
-					hit_material = planes_[i].material();
-
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	maths::Vector3f RayMarcher::RayCast(
-		const maths::Vector3f& origin,
-		const maths::Vector3f& ray_direction,
-		const int& depth)
-	{
-		maths::Ray3 ray{ origin, ray_direction };
-		Material hit_object_material;
-		HitInfos hit_info;
-		float distance;
-		bool in_light = true;
-
-		//If the ray didn't hit anything or if the recursive depth of the raycasting
-		// is greater than 4, return background color
-		if (depth > 4 || !ObjectIntersect(ray, hit_object_material, hit_info, distance))
-		{
-			return background_color_;
-		}
-		else
-		{
-			//Compute the normal or direction of the light
-			maths::Vector3f light_normal(light_.position - hit_info.hit_position);
-			light_normal.Normalize();
-
-			//Compute shadow ray to check if point is in shadow
-			in_light = ShadowRay(hit_info.hit_position, hit_info.normal, light_normal);
-
-			// Calculate how much light is the point getting
-			float light_value = maths::Vector3f::Dot(hit_info.normal, light_normal);
-			if (light_value < 0.0f)
-			{
-				light_value = 0.0f;
-			}
-
-			if (in_light)
-			{
-				// Point is not in the shadow
-				// Cast reflexion ray recursively to compute reflexion color
-				const maths::Vector3f reflection_direction = Reflect(ray_direction, hit_info.normal).Normalized();
-				const maths::Vector3f reflection_origin(hit_info.hit_position + hit_info.normal * bias_);
-				const maths::Vector3f reflection_color = RayCast(reflection_origin, reflection_direction, depth + 1);
-				hit_object_material.set_color(hit_object_material.color() * light_value
-					+= reflection_color * hit_object_material.reflexion_index());
-			}
-			else
-			{
-				//Point is in the shadow
-				hit_object_material.set_color(hit_object_material.color() * light_value * in_light);
-			}
-			return (hit_object_material.color());
-		}
 	}
 
 	void RayMarcher::Render()

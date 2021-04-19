@@ -23,7 +23,7 @@ TEST(Raymarching, Image_output)
 	int width = 1920;
 	int heigth = 1080;
 	float fov = 51.52f;
-	double bias = 1e-4;
+	double bias = 1e-1;
 
 	maths::Plane plane(maths::Vector3f(0.0f, -20.0f, 0.0f), maths::Vector3f(0.0f, 1.0f, 0.0f));
 	plane.SetMaterial(material_test4);
@@ -42,7 +42,7 @@ TEST(Raymarching, Image_output)
 
 	PointLight light;
 	std::vector<maths::Sphere> spheres;
-	//spheres.push_back(sphere4);
+	spheres.push_back(sphere4);
 	spheres.push_back(sphere3);
 	spheres.push_back(sphere1);
 	spheres.push_back(sphere5);

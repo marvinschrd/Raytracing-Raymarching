@@ -67,20 +67,6 @@ namespace raytracing {
 			bias_ = bias;
 		}
 
-		//Cast ray for each pixel to check collision and render objects
-		maths::Vector3f RayCast(
-			const maths::Vector3f& origin,
-			const maths::Vector3f& ray_direction,
-			const int& depth = 0);
-
-		//Check intersection between the ray and each object in the scene
-		bool ObjectIntersect(
-			maths::Ray3& ray,
-			Material& hit_material,
-			HitInfos& hit_infos,
-			float& distance);
-
-
 		//Cast a shadow ray to check intersection with objects and render shadows
 		bool ShadowRay(
 			const maths::Vector3f& hit_position,
