@@ -25,7 +25,6 @@ SOFTWARE.
 
 namespace raytracing {
 
-	inline
 	float clamp(float& rgb_value)
 	{
 		if (rgb_value > 255.0f)
@@ -51,9 +50,6 @@ namespace raytracing {
 				double dir_z = -height_ / (2.0 * tan(fov_ / 2.0));
 
 				maths::Vector3f ray_direction = maths::Vector3f(dir_x, dir_y, dir_z).Normalized();
-
-				/*frame_buffer_[j + i * width_] = RayCast(maths::Vector3f(0.0f, 0.0f, 0.0f),
-					ray_direction);*/
 
 				frame_buffer_[j + i * width_] = RayMarching(maths::Vector3f(0.0f, 0.0f, 0.0f),
 					ray_direction);

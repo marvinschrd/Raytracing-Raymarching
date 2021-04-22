@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 #include <omp.h>
+#include  <chrono>
 #include <fstream>
 
 #include "raytracing/ray_tracer.h"
@@ -141,7 +142,8 @@ maths::Vector3f RayTracer::RayCast(
 
 void RayTracer::Render()
 {
-#pragma omp parallel for
+	auto begin = std::chrono::high_resolution_clock::now();
+	#pragma omp parallel for
 	for (int i = 0; i < height_; ++i)
 	{
 		for (int j = 0; j < width_; ++j)
@@ -156,6 +158,9 @@ void RayTracer::Render()
 				ray_direction);
 		}
 	}
+	auto end = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+	std::cout << "duration : " << duration.count() << " microsecondes " << "\n";
 	WriteImage();
 }
 
