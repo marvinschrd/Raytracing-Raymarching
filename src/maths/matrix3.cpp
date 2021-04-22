@@ -33,14 +33,17 @@ Matrix3f::Matrix3f(const Vector3f& v1, const Vector3f& v2, const Vector3f& v3) {
 	matrix_[1] = v2;
 	matrix_[2] = v3;
 }
+
 Vector3f& Matrix3f::operator[](size_t index) {
 	
 	return matrix_[index];
 }
+
 const Vector3f& Matrix3f::operator[](size_t index) const {
 	
 	return matrix_[index];
 }
+
 Matrix3f Matrix3f::operator+(const Matrix3f& rhs) const {
 	
 	Matrix3f tmp_mat;
@@ -55,12 +58,14 @@ Matrix3f Matrix3f::operator+(const Matrix3f& rhs) const {
 
 	return tmp_mat;
 }
+
 Matrix3f& Matrix3f::operator+=(const Matrix3f& rhs) {
 
 	*this = *this + rhs;
 
 	return *this;
 }
+
 Matrix3f Matrix3f::operator-(const Matrix3f& rhs) const {
 	
 	Matrix3f tmp_mat;
@@ -75,12 +80,14 @@ Matrix3f Matrix3f::operator-(const Matrix3f& rhs) const {
 
 	return tmp_mat;
 }
+
 Matrix3f& Matrix3f::operator-=(const Matrix3f& rhs) {
 
 	*this = *this - rhs;
 
 	return *this;
 }
+
 Matrix3f Matrix3f::operator*(const Matrix3f& rhs) const {
 	
 	Matrix3f tmp_mat;
@@ -98,12 +105,14 @@ Matrix3f Matrix3f::operator*(const Matrix3f& rhs) const {
 
 	return tmp_mat;
 }
+
 Matrix3f& Matrix3f::operator*=(const Matrix3f& rhs) {
 	
 	*this = *this * rhs;
 
 	return *this;
 }
+
 Vector3f Matrix3f::operator*(Vector3f rhs) const {
 	
 	Vector3f tmp_vec;
@@ -114,6 +123,7 @@ Vector3f Matrix3f::operator*(Vector3f rhs) const {
 
 	return tmp_vec;
 }
+
 Matrix3f& Matrix3f::operator*=(float scalar) {
 	
 	for (int i = 0; i < matrix_.size(); ++i) {
@@ -126,6 +136,7 @@ Matrix3f& Matrix3f::operator*=(float scalar) {
 
 	return *this;
 }
+
 float Matrix3f::cofactor(int row, int column) const {
 	
 	const float kSign = (column + row) % 2 == 0 ? 1.0f : -1.0f;
@@ -155,6 +166,7 @@ float Matrix3f::cofactor(int row, int column) const {
 	
 	return kSign * kTmpDet;
 }
+
 float Matrix3f::determinant() const {
 	
 	const float kDet = matrix_[0][0] * cofactor(0, 0)
@@ -163,6 +175,7 @@ float Matrix3f::determinant() const {
 	
 	return kDet;
 }
+
 Matrix3f Matrix3f::Inverse() const {
 
 	const float kDet = determinant();
@@ -183,12 +196,14 @@ Matrix3f Matrix3f::Inverse() const {
 
 	return tmp_mat;
 }
+
 Matrix3f Matrix3f::Transpose() const {
 	
 	return Matrix3f(Vector3f(matrix_[0][0], matrix_[1][0], matrix_[2][0]),
 					Vector3f(matrix_[0][1], matrix_[1][1], matrix_[2][1]),
 					Vector3f(matrix_[0][2], matrix_[1][2], matrix_[2][2]));
 }
+
 Matrix3f Matrix3f::adjoint() const {
 	
 	Matrix3f tmp_mat;
@@ -203,24 +218,29 @@ Matrix3f Matrix3f::adjoint() const {
 	
 	return tmp_mat.Transpose();
 }
+
 bool Matrix3f::IsOrthogonal() const {
 	
 	return Equal(determinant(),1.0f);
 }
+
 Matrix3f Matrix3f::identity() {
 	
 	return Matrix3f(Vector3f(1, 0, 0), Vector3f(0, 1, 0), Vector3f(0, 0, 1));
 }
+
 Matrix3f Matrix3f::rotationMatrix(radian_t angle) {
 	
 	return Matrix3f(Vector3f(cos(angle), -sin(angle), 0),
 					Vector3f(sin(angle), cos(angle), 0), 
 					Vector3f(0, 0, 1)); 
 }
+
 Matrix3f Matrix3f::scalingMatrix(Vector2f axisValues) {
 	
 	return Matrix3f(Vector3f(axisValues.x, 0, 0), Vector3f(0, axisValues.y, 0), Vector3f(0, 0, 1));
 }
+
 Matrix3f Matrix3f::translationMatrix(Vector2f axisValues) {
 	
 	return Matrix3f(Vector3f(1, 0, axisValues.x), Vector3f(0, 1, axisValues.y), Vector3f(0, 0, 1));

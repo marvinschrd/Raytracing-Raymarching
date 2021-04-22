@@ -35,7 +35,7 @@ bool Overlap(const AABB3& a, const AABB3& b) {
 
 	if (Contain(a, b) || Contain(b, a)) return false;
 	return !(v1.x > 0 || v2.x > 0 || v1.y > 0 || v2.y > 0 ||
-		v1.z > 0 || v2.z > 0);
+		     v1.z > 0 || v2.z > 0);
 }
 
 bool Contain(const AABB3& a, const AABB3& b) {
@@ -43,7 +43,7 @@ bool Contain(const AABB3& a, const AABB3& b) {
 	const Vector3f v2 = a.top_right() - b.top_right();
 
 	return (v1.x > 0 && v1.y > 0 && v1.z > 0 && v2.x > 0 
-		&& v2.y > 0 && v2.z > 0);
+		    && v2.y > 0 && v2.z > 0);
 }
 
 bool OverlapSphere(const Sphere& a, const Sphere& b) {
@@ -112,8 +112,12 @@ bool SphereContainAABB(const Sphere& sphere, const AABB3& aabb) {
 
 bool AABBContainSphere(const Sphere& sphere, const AABB3& aabb) {
     const AABB3 sphereAABB =
-        AABB3(sphere.center() + Vector3f(sphere.radius(), sphere.radius(), sphere.radius()),
-              sphere.center() - Vector3f(sphere.radius(), sphere.radius(), sphere.radius()));
+        AABB3(sphere.center() + Vector3f(sphere.radius(), 
+              sphere.radius(), 
+              sphere.radius()),
+              sphere.center() - Vector3f(sphere.radius(), 
+              sphere.radius(), 
+              sphere.radius()));
 
     return Contain(aabb, sphereAABB);
 }

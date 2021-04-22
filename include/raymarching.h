@@ -84,11 +84,19 @@ namespace raytracing {
 		//Write scene result into a .ppm image
 		void WriteImage();
 		
-		float ClosestDistance(maths::Ray3 ray, HitInfos& hit_infos, Material& hit_material);
+		float ClosestDistance(
+			maths::Ray3 ray, 
+			HitInfos& hit_infos, 
+			Material& hit_material);
 
-		maths::Vector3f RayMarching(maths::Vector3f ray_origin, maths::Vector3f ray_direction, const int& depth = 0);
+		maths::Vector3f RayMarching(
+			maths::Vector3f ray_origin, 
+			maths::Vector3f ray_direction, 
+			const int& depth = 0);
 
-		float SceneSDF(maths::Vector3f position, maths::Sphere& closest_sphere);
+		float SceneSDF(
+			maths::Vector3f position, 
+			maths::Sphere& closest_sphere);
 
 		std::vector<maths::Vector3f> frameBuffer() const { return frame_buffer_; }
 

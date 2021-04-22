@@ -29,16 +29,12 @@ SOFTWARE.
 #include "raytracing/ray_tracer.h"
 
 namespace raytracing {
-
 	
-	float raytracer_clamp(float& rgb_value)
-	{
-	if (rgb_value > 255.0f)
-	{
+	float raytracer_clamp(float& rgb_value) {
+	if (rgb_value > 255.0f) {
 		rgb_value = 255.0f;
 	}
-	if (rgb_value < 0.0f)
-	{
+	if (rgb_value < 0.0f) {
 		rgb_value = 0.0f;
 	}
 	return rgb_value;
@@ -48,36 +44,33 @@ bool RayTracer::ObjectIntersect(
 	maths::Ray3& ray,
 	Material& hit_material, 
 	HitInfos& hit_info, 
-	float& distance)
-{
+	float& distance) {
 	float max_distance = 1000000.0f;
 	distance = max_distance;
-	for (int i = 0; i < spheres_.size(); ++i)
-	{
+
+	for (int i = 0; i < spheres_.size(); ++i) {
 		hit_info.distance = max_distance;
 		// Only render intersection for the nearest sphere,
 		// if distance is smaller than previously
-		if (ray.IntersectSphere(spheres_[i], hit_info.hit_position, hit_info.distance)
-			&& hit_info.distance < distance)
-		{
+		if (ray.IntersectSphere(spheres_[i], 
+			hit_info.hit_position, 
+			hit_info.distance)
+			&& hit_info.distance < distance) {
 			//Set hit info value regarding the object that was hit
-			hit_info.normal = maths::Vector3f(hit_info.hit_position - spheres_[i].center()).Normalized();
+			hit_info.normal = maths::Vector3f(
+							  hit_info.hit_position - spheres_[i].center()).Normalized();
 			hit_material = spheres_[i].material();
 			distance = hit_info.distance;
 		}
 	}
-	if (distance != max_distance)
-	{
+	if (distance != max_distance) {
 		// Means that the ray had an intersection
 		return true;
 	}
 
-	if (planes_.size() != 0)
-	{
-		for (int i = 0; i < planes_.size(); ++i)
-		{
-			if (ray.IntersectPlane(planes_[i], hit_info.hit_position))
-			{
+	if (planes_.size() != 0) {
+		for (int i = 0; i < planes_.size(); ++i) {
+			if (ray.IntersectPlane(planes_[i], hit_info.hit_position)) {
 				hit_info.normal = planes_[i].normal();
 				hit_material = planes_[i].material();
 
@@ -91,8 +84,7 @@ bool RayTracer::ObjectIntersect(
 maths::Vector3f RayTracer::RayCast(
 	const maths::Vector3f& origin,
 	const maths::Vector3f& ray_direction, 
-	const int& depth)
-{
+	const int& depth) {
 	maths::Ray3 ray{ origin, ray_direction };
 	Material hit_object_material;
 	HitInfos hit_info;
@@ -101,12 +93,10 @@ maths::Vector3f RayTracer::RayCast(
 
 	//If the ray didn't hit anything or if the recursive depth of the raycasting
 	// is greater than 4, return background color
-	if (depth > 4 || !ObjectIntersect(ray, hit_object_material, hit_info, distance))
-	{
+	if (depth > 4 || !ObjectIntersect(ray, hit_object_material, hit_info, distance)) {
 		return background_color_;
 	}
-	else
-	{
+	else {
 		//Compute the normal or direction of the light
 		maths::Vector3f light_normal(light_.position - hit_info.hit_position);
 		light_normal.Normalize();
@@ -116,13 +106,11 @@ maths::Vector3f RayTracer::RayCast(
 
 		// Calculate how much light is the point getting
 		float light_value = maths::Vector3f::Dot(hit_info.normal, light_normal);
-		if (light_value < 0.0f)
-		{
+		if (light_value < 0.0f) {
 			light_value = 0.0f;
 		}
 
-		if (in_light)
-		{
+		if (in_light) {
 			// Point is not in the shadow
 			// Cast reflexion ray recursively to compute reflexion color
 			const maths::Vector3f reflection_direction = Reflect(ray_direction, hit_info.normal).Normalized();
@@ -131,8 +119,7 @@ maths::Vector3f RayTracer::RayCast(
 			hit_object_material.set_color(hit_object_material.color() * light_value 
 				+= reflection_color * hit_object_material.reflexion_index());
 		}
-		else
-		{
+		else {
 			//Point is in the shadow
 			hit_object_material.set_color(hit_object_material.color() * light_value * in_light);
 		}
@@ -140,14 +127,11 @@ maths::Vector3f RayTracer::RayCast(
 	}
 }
 
-void RayTracer::Render()
-{
+void RayTracer::Render() {
 	auto begin = std::chrono::high_resolution_clock::now();
 	#pragma omp parallel for
-	for (int i = 0; i < height_; ++i)
-	{
-		for (int j = 0; j < width_; ++j)
-		{
+	for (int i = 0; i < height_; ++i) {
+		for (int j = 0; j < width_; ++j) {
 			double dir_x = (j + 0.5f) - width_ / 2.0;
 			double dir_y = -(i + 0.5f) + height_ / 2.0;
 			double dir_z = -height_ / (2.0 * tan(fov_ / 2.0));
@@ -164,8 +148,7 @@ void RayTracer::Render()
 	WriteImage();
 }
 
-void RayTracer::WriteImage()
-{
+void RayTracer::WriteImage() {
 	std::ofstream ofs("./image.ppm", std::ios::out | std::ios::binary);
 	ofs << "P6\n" << width_ << " " << height_ << "\n255\n";
 	for (uint32_t i = 0; i < height_ * width_; ++i) {
@@ -181,8 +164,7 @@ void RayTracer::WriteImage()
 bool RayTracer::ShadowRay(
 	const maths::Vector3f& hit_position, 
 	const maths::Vector3f& hit_normal, 
-	const maths::Vector3f& light_normal)
-{
+	const maths::Vector3f& light_normal) {
 	//Add a bias along the normal to prevent self collision
 	const maths::Vector3f shadow_ray_origin(hit_position + hit_normal * bias_);
 	maths::Ray3 shadow_ray(shadow_ray_origin, light_normal);
@@ -190,8 +172,7 @@ bool RayTracer::ShadowRay(
 	HitInfos shadow_hit_info;
 	float tmp_distance;
 		
-	if (ObjectIntersect(shadow_ray, tmp_material, shadow_hit_info, tmp_distance))
-	{
+	if (ObjectIntersect(shadow_ray, tmp_material, shadow_hit_info, tmp_distance)) {
 		// Return that the point is in the shadow
 		return false;
 	}
@@ -201,8 +182,7 @@ bool RayTracer::ShadowRay(
 
 maths::Vector3f RayTracer::Reflect(
 	const maths::Vector3f& ray_direction, 
-	const maths::Vector3f& hit_normal)
-{
+	const maths::Vector3f& hit_normal) {
 	const float t = maths::Vector3f::Dot(ray_direction, hit_normal);
 	const float r = 2.0f * t;
 	return ray_direction - hit_normal * r;

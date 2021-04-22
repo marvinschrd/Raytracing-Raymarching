@@ -69,7 +69,6 @@ bool Ray2::IntersectCircle(const Circle& circle) {
     return true;
 }
 
-
 bool Ray2::IntersectAABB2(const AABB2& aabb) {
     const Vector2f lb = aabb.bottom_left();
     const Vector2f rt = aabb.top_right();

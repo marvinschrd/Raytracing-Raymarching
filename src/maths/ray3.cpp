@@ -65,30 +65,11 @@ bool Ray3::IntersectSphere(const Sphere& sphere, Vector3f& hitPosition, float& d
 
     // calculate the position where the ray hit
     hitPosition = origin_ + direction_ * distance;
-    
-    
-    //const Vector3f origin = origin_;
-    //const Vector3f direction = direction_;
-    //const Vector3f oc = origin - sphere.center();
-    //const double b = 2 * Vector3f::Dot(oc, direction);
-    //const double c = Vector3f::Dot(oc, oc) - sphere.radius() * sphere.radius();
-    //double disc = b * b - 4 * c;
-    //if (disc < 1e-4) return false;
-    //disc = sqrt(disc);
-    //double t0 = -b - disc;
-    //double t1 = -b + disc;
-    //if (t0 < 0) t0 = t1;
-    //if (t0 < 0) return false;
-    //distance = t0;
-    ////distance = (t0 < t1) ? t0 : t1;
-    //hit_position = origin_ + direction_ * distance;
-    //
-    return true;
 
+    return true;
 }
 
 bool Ray3::IntersectAABB3(const AABB3& aabb) {
-
     const Vector3f lb = aabb.bottom_left();
     const Vector3f rt = aabb.top_right();
     Vector3f dirfrac;
@@ -97,6 +78,7 @@ bool Ray3::IntersectAABB3(const AABB3& aabb) {
     dirfrac.x = 1.0f / direction().x;
     dirfrac.y = 1.0f / direction().y;
     dirfrac.z = 1.0f / direction().z;
+
     // lb is the corner of AABB with minimal coordinates - left bottom, rt is maximal corner
     const float t1 = (lb.x - origin_.x) * dirfrac.x;
     const float t2 = (rt.x - origin_.x) * dirfrac.x;
@@ -132,8 +114,8 @@ bool Ray3::IntersectPlane(const Plane& plane, Vector3f& hitPosition) {
     if (s > 0) {
         return false;
     }
-    const float distance = (plane.Distance(plane.point()) - origin_.Dot(
-                          plane.normal())) / s;
+    const float distance = (plane.Distance(plane.point()) - 
+                            origin_.Dot(plane.normal())) / s;
     if (distance < 0) {
         return false;
     }

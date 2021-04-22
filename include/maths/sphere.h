@@ -54,21 +54,31 @@ public:
     }
 
     void set_radius(float radius) { radius_ = radius; }
+
     Vector3f center() const { return center_; }
+
     float radius() const { return radius_; }
+
     Material material() const { return material_; }
+
     void set_material(Material material) { material_ = material; }
 
 private:
     Vector3f center_ = {};
+
     float radius_ = {};
+
     Material material_ = {};
 };
 
 bool OverlapSphere(const Sphere& a, const Sphere& b);
+
 bool ContainSphere(const Sphere& a, const Sphere& b);
+
 bool AABBOverlapSphere(const AABB3& a, const Sphere& b);
+
 bool SphereContainAABB(const Sphere& sphere, const AABB3& aabb);
+
 bool AABBContainSphere(const Sphere& sphere, const AABB3& aabb);
 
 }  // namespace maths

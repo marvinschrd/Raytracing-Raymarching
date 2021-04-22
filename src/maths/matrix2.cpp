@@ -45,7 +45,6 @@ Matrix2f Matrix2f::operator+(const Matrix2f& rhs) const {
 	float m10 = matrix_[1][0] + rhs[1][0];
 	float m11 = matrix_[1][1] + rhs[1][1];
 
-
 	return Matrix2f(Vector2f(m00,m01),Vector2f(m10,m11));
 }
 Matrix2f& Matrix2f::operator+=(const Matrix2f& rhs) {
