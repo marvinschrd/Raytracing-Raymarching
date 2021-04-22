@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 #pragma once
+#include <cuda_runtime.h>
 #include "maths/angle.h"
 
 namespace maths {
@@ -41,13 +42,13 @@ public:
         float coord[3]{};
     };
 
-    Vector3f()
+  Vector3f()
         : x(0),
           y(0),
           z(0) {
     }
 
-    Vector3f(float x, float y, float z);
+	Vector3f(float x, float y, float z);
 
     Vector3f operator+(const Vector3f& rhs) const;
 
@@ -80,10 +81,10 @@ public:
     static Vector3f Cross(const Vector3f& v1, const Vector3f& v2);
 
     // This function calculates the norm.
-    float Magnitude() const;
+	float Magnitude() const;
 
     // This function calculates the squared length of a vector.
-    float SqrMagnitude() const;
+	float SqrMagnitude() const;
 
     // This function calculates the angle between two vectors.
     radian_t AngleBetween(const Vector3f& v2) const;
@@ -94,19 +95,19 @@ public:
     float operator[](std::size_t index) const;
 
     // Allows to write value at index.
-    float& operator[](std::size_t index);
+	float& operator[](std::size_t index);
 
     // This function makes a vector have a magnitude of 1.
     Vector3f Normalized() const;
 
-    void Normalize();
+   void Normalize();
 
     // The function Lerp linearly interpolates between two points.
     Vector3f Lerp(const Vector3f& v2, float t) const;
 
-    static Vector3f Lerp(const Vector3f& v1, const Vector3f& v2, float t);
+   static Vector3f Lerp(const Vector3f& v1, const Vector3f& v2, float t);
 
     // The function Slerp spherically interpolates between two vectors.
-    Vector3f Slerp(Vector3f& v2, float t) const;
+   Vector3f Slerp(Vector3f& v2, float t) const;
 };
 } // namespace maths

@@ -30,9 +30,9 @@ SOFTWARE.
 
 namespace raytracing {
 
-inline
-	float clamp(float& rgb_value)
-{
+	
+	float raytracer_clamp(float& rgb_value)
+	{
 	if (rgb_value > 255.0f)
 	{
 		rgb_value = 255.0f;
@@ -160,7 +160,7 @@ void RayTracer::Render()
 	}
 	auto end = std::chrono::high_resolution_clock::now();
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-	std::cout << "duration : " << duration.count() << " microsecondes " << "\n";
+	std::cout << " raytracing duration : " << duration.count() << " microsecondes " << "\n";
 	WriteImage();
 }
 
@@ -169,9 +169,9 @@ void RayTracer::WriteImage()
 	std::ofstream ofs("./image.ppm", std::ios::out | std::ios::binary);
 	ofs << "P6\n" << width_ << " " << height_ << "\n255\n";
 	for (uint32_t i = 0; i < height_ * width_; ++i) {
-		char r = (char)(clamp(frame_buffer_[i].x));
-		char g = (char)(clamp(frame_buffer_[i].y));
-		char b = (char)(clamp(frame_buffer_[i].z));
+		char r = (char)(raytracer_clamp(frame_buffer_[i].x));
+		char g = (char)(raytracer_clamp(frame_buffer_[i].y));
+		char b = (char)(raytracer_clamp(frame_buffer_[i].z));
 
 		ofs << r << g << b;
 	}

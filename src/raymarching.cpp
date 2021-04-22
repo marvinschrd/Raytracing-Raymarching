@@ -20,12 +20,13 @@ SOFTWARE.
 
 #include <omp.h>
 #include <fstream>
+#include  <chrono>
 
 #include "raymarching.h"
 
 namespace raytracing {
-
-	float clamp(float& rgb_value)
+	
+	float raymarching_clamp(float& rgb_value)
 	{
 		if (rgb_value > 255.0f)
 		{
@@ -40,7 +41,8 @@ namespace raytracing {
 
 	void RayMarcher::Render()
 	{
-#pragma omp parallel for
+	auto begin = std::chrono::high_resolution_clock::now();
+	#pragma omp parallel for
 		for (int i = 0; i < height_; ++i)
 		{
 			for (int j = 0; j < width_; ++j)
@@ -55,6 +57,9 @@ namespace raytracing {
 					ray_direction);
 			}
 		}
+		auto end = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+		std::cout << " raymarching duration : " << duration.count() << " microsecondes " << "\n";
 		WriteImage();
 	}
 
@@ -63,9 +68,9 @@ namespace raytracing {
 		std::ofstream ofs("./ray_marching_image.ppm", std::ios::out | std::ios::binary);
 		ofs << "P6\n" << width_ << " " << height_ << "\n255\n";
 		for (uint32_t i = 0; i < height_ * width_; ++i) {
-			char r = (char)(clamp(frame_buffer_[i].x));
-			char g = (char)(clamp(frame_buffer_[i].y));
-			char b = (char)(clamp(frame_buffer_[i].z));
+			char r = static_cast<char>(raymarching_clamp(frame_buffer_[i].x));
+			char g = static_cast<char>(raymarching_clamp(frame_buffer_[i].y));
+			char b = static_cast<char>(raymarching_clamp(frame_buffer_[i].z));
 
 			ofs << r << g << b;
 		}
@@ -118,30 +123,6 @@ namespace raytracing {
 
 	float RayMarcher::ClosestDistance(maths::Ray3 ray, HitInfos& hit_infos, Material& hit_material)
 	{
-		/*float depth = min_distance_;
-		for (int j = 0; j < spheres_.size(); ++j)
-		{
-			for (int i = 0; i < max_marching_steps_; ++i)
-			{
-				maths::Vector3f p = ray.PointInRay(depth);
-				maths::Vector3f q = ray.origin() + ray.direction() * depth;
-				float dist = spheres_[j].sdf(p);
-				if (dist < 0.0001f)
-				{
-					hit_material = spheres_[j].material();
-					hit_infos.hit_position = p;
-					hit_infos.normal = maths::Vector3f(hit_infos.hit_position - spheres_[j].center()).Normalized();
-					return depth;
-				}
-				depth += dist;
-				if (depth >= max_distance_)
-				{
-					return max_distance_;
-				}
-			}
-		}
-		return max_distance_;*/
-
 		float depth = min_distance_;
 		maths::Sphere closest_sphere;
 		for (int i = 0; i < max_marching_steps_; ++i)

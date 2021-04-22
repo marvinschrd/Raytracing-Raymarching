@@ -31,11 +31,11 @@ namespace maths {
 	
 class Ray3 {
 public:
-	Ray3() = default;
-	Ray3(const Vector3f& origin, const Vector3f& direction) : origin_(origin), direction_(direction) {}
+	 Ray3() = default;
+	 Ray3(const Vector3f& origin, const Vector3f& direction) : origin_(origin), direction_(direction) {}
 
 	// Return a point along the ray from a given value
-	Vector3f PointInRay(float value) const {
+	 Vector3f PointInRay(float value) const {
 		return { origin_ + direction_ * value };
 	}
 
@@ -51,9 +51,9 @@ public:
 	bool IntersectPlane(const Plane& plane, Vector3f& hitPosition);
 
 private:
-	Vector3f origin_ = {};
-	Vector3f direction_ = {};
-	Vector3f hit_position_;
+		Vector3f origin_ = {};
+		Vector3f direction_ = {};
+		Vector3f hit_position_;
 };
 
 } // namespace maths
