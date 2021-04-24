@@ -29,6 +29,7 @@ SOFTWARE.
 #include "maths/sphere.h"
 #include "maths/ray3.h"
 #include "maths/plane.h"
+#include "octree.h"
 
 namespace raytracing {
 
@@ -54,7 +55,9 @@ public:
 		const int& height,
 		const int& width,
 		const float& fov,
-		const double& bias)
+		const double& bias,
+		const Octree scene_octree	
+	)
 	{
 		spheres_ = spheres;
 		planes_ = planes;
@@ -63,8 +66,9 @@ public:
 		width_ = width;
 		fov_ = fov;
 		int total = width_ * height_;
-		frame_buffer_ = std::vector<maths::Vector3f>(total);
+		frame_buffer_.resize(total);
 		bias_ = bias;
+		scene_octree_ = scene_octree;
 	}
 
 	//Cast ray for each pixel to check collision and render objects
@@ -109,6 +113,7 @@ private:
 	float fov_;
 	std::vector<maths::Vector3f> frame_buffer_;
 	double bias_;
+	Octree scene_octree_;
 	};
 	
 }// namespace raytracing

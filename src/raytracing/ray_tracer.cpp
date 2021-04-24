@@ -48,6 +48,9 @@ bool RayTracer::ObjectIntersect(
 	float max_distance = 1000000.0f;
 	distance = max_distance;
 
+
+	std::vector<maths::Sphere> spheres_to_check = scene_octree_.Retrieve_spheres(ray);
+
 	for (int i = 0; i < spheres_.size(); ++i) {
 		hit_info.distance = max_distance;
 		// Only render intersection for the nearest sphere,
@@ -67,17 +70,6 @@ bool RayTracer::ObjectIntersect(
 		// Means that the ray had an intersection
 		return true;
 	}
-
-	if (planes_.size() != 0) {
-		for (int i = 0; i < planes_.size(); ++i) {
-			if (ray.IntersectPlane(planes_[i], hit_info.hit_position)) {
-				hit_info.normal = planes_[i].normal();
-				hit_material = planes_[i].material();
-
-				return true;
-			}
-		}
-	}
 	return false;
 }
 
@@ -89,7 +81,7 @@ maths::Vector3f RayTracer::RayCast(
 	Material hit_object_material;
 	HitInfos hit_info;
 	float distance;
-	bool in_light = true;
+	bool in_light;
 
 	//If the ray didn't hit anything or if the recursive depth of the raycasting
 	// is greater than 4, return background color
@@ -132,9 +124,9 @@ void RayTracer::Render() {
 	#pragma omp parallel for
 	for (int i = 0; i < height_; ++i) {
 		for (int j = 0; j < width_; ++j) {
-			double dir_x = (j + 0.5f) - width_ / 2.0;
-			double dir_y = -(i + 0.5f) + height_ / 2.0;
-			double dir_z = -height_ / (2.0 * tan(fov_ / 2.0));
+			float dir_x = (j + 0.5f) - width_ / 2.0f;
+			float dir_y = -(i + 0.5f) + height_ / 2.0f;
+			float dir_z = -height_ / (2.0 * tan(fov_ / 2.0f));
 
 			maths::Vector3f ray_direction = maths::Vector3f(dir_x, dir_y, dir_z).Normalized();
 
@@ -152,9 +144,9 @@ void RayTracer::WriteImage() {
 	std::ofstream ofs("./image.ppm", std::ios::out | std::ios::binary);
 	ofs << "P6\n" << width_ << " " << height_ << "\n255\n";
 	for (uint32_t i = 0; i < height_ * width_; ++i) {
-		char r = (char)(raytracer_clamp(frame_buffer_[i].x));
-		char g = (char)(raytracer_clamp(frame_buffer_[i].y));
-		char b = (char)(raytracer_clamp(frame_buffer_[i].z));
+		char r = static_cast<char>(raytracer_clamp(frame_buffer_[i].x));
+		char g = static_cast<char>(raytracer_clamp(frame_buffer_[i].y));
+		char b = static_cast<char>(raytracer_clamp(frame_buffer_[i].z));
 
 		ofs << r << g << b;
 	}
