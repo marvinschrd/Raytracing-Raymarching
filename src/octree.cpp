@@ -35,19 +35,49 @@ void Octree::Split()
 {
 	has_split_ = true;
 
-	/*float child_width = octree_aabb_.
+	/*float width = (octree_aabb_.extent()*2).Magnitude() / sqrt(3);
+	float parent_width = octree_aabb_.extent().x * 2;*/
+	float child_width = octree_aabb_.extent().x;
 
-	octree firstoctant;
-	octree secondoctant;
-	octree thirdoctant;
-	octree fourthoctant;
-	octree fifthoctant;
-	octree sixthtoctant;
-	octree seventhtoctant;
-	octree eigthoctant;
+	maths::AABB3 first_aabb(maths::Vector3f(
+		octree_aabb_.bottom_left().x, octree_aabb_.bottom_left().y + child_width, octree_aabb_.bottom_left().z),
+		maths::Vector3f(octree_aabb_.center().x + child_width, octree_aabb_.center().y, octree_aabb_.center().z));
+	 Octree firstoctant(max_spheres_number_, max_depth_, first_aabb, depth_ + 1);
 
-	childs_ = {firstoctant,secondoctant,thirdoctant,fourthoctant,fifthoctant,sixthtoctant,seventhtoctant,eigthoctant};*/
+	maths::AABB3 second_aabb(maths::Vector3f(
+		octree_aabb_.center().x, octree_aabb_.center().y + child_width, octree_aabb_.center().z + child_width),
+		maths::Vector3f(octree_aabb_.top_right().x + child_width, octree_aabb_.top_right().y, octree_aabb_.top_right().z+ child_width));
+	Octree secondoctant(max_spheres_number_, max_depth_, second_aabb, depth_ + 1);
+		
+	maths::AABB3 third_aabb(octree_aabb_.bottom_left(), octree_aabb_.center());
+	Octree thirdoctant(max_spheres_number_, max_depth_, third_aabb, depth_ + 1);
 
+	maths::AABB3 fourth_aabb(maths::Vector3f(
+		octree_aabb_.bottom_left().x + child_width, octree_aabb_.bottom_left().y, octree_aabb_.bottom_left().z),
+		maths::Vector3f(octree_aabb_.center().x + child_width, octree_aabb_.center().y, octree_aabb_.center().z));
+	Octree fourthoctant(max_spheres_number_, max_depth_, fourth_aabb, depth_ + 1);
+
+	maths::AABB3 fifth_aabb(maths::Vector3f(
+		octree_aabb_.center().x - child_width, octree_aabb_.center().y + child_width, octree_aabb_.center().z),
+		maths::Vector3f(octree_aabb_.top_right().x - child_width, octree_aabb_.top_right().y, octree_aabb_.top_right().z));
+	Octree fifthoctant(max_spheres_number_, max_depth_, fifth_aabb, depth_ + 1);
+
+	maths::AABB3 sixth_aabb(octree_aabb_.center(),octree_aabb_.top_right());
+	Octree sixthtoctant(max_spheres_number_, max_depth_, sixth_aabb, depth_ + 1);
+
+	maths::AABB3 seventh_aabb(maths::Vector3f(
+		octree_aabb_.bottom_left().x, octree_aabb_.bottom_left().y, octree_aabb_.bottom_left().z - child_width),
+		maths::Vector3f(octree_aabb_.center().x, octree_aabb_.center().y, octree_aabb_.center().z- child_width));
+	Octree seventhoctant(max_spheres_number_, max_depth_, seventh_aabb, depth_ + 1);
+
+	maths::AABB3 eight_aabb(maths::Vector3f(
+		octree_aabb_.center().x, octree_aabb_.center().y - child_width, octree_aabb_.center().z),
+		maths::Vector3f(octree_aabb_.top_right().x, octree_aabb_.top_right().y - child_width, octree_aabb_.top_right().z));
+	Octree eightoctant(max_spheres_number_, max_depth_, eight_aabb, depth_ + 1);
+
+	childs_.resize(8);
+	childs_ = { firstoctant,secondoctant,thirdoctant,fourthoctant,fifthoctant,sixthtoctant,seventhoctant,eightoctant };
+	
 	for (Octree child : childs_)
 	{
 		for(int i = 0; i <= spheres_.size(); ++i)

@@ -35,7 +35,7 @@ class Octree
 {
 public :
 	Octree() = default;
-	Octree(const int& max_sphere_number, const int& max_depth, const maths::AABB3& AABB, const int& depth) : octree_aabb_(AABB), max_spheres_number_(max_sphere_number), max_depth_(max_depth), depth_(depth) {}
+	Octree(int max_sphere_number, int max_depth, maths::AABB3& AABB, int depth) : octree_aabb_(AABB), max_spheres_number_(max_sphere_number), max_depth_(max_depth), depth_(depth) {}
 
 	void Insert(const maths::Sphere& sphere);
 
@@ -57,6 +57,6 @@ private:
 	int max_depth_ = 64;
 	bool has_split_ = false;
 	
-	std::array<Octree, 8> childs_;
+	std::vector<Octree> childs_;
 	std::vector<maths::Sphere> spheres_;
 };
