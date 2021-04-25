@@ -80,7 +80,7 @@ void Octree::Split()
 	
 	for (Octree child : childs_)
 	{
-		for(int i = 0; i <= spheres_.size(); ++i)
+		for(int i = 0; i < spheres_.size(); ++i)
 		{
 			if(AABBContainSphere(spheres_[i],child.aabb()))
 			{
@@ -105,7 +105,13 @@ std::vector<maths::Sphere> Octree::Retrieve_spheres(maths::Ray3 ray)
 		{
 			for (Octree child : childs_)
 			{
-				child.Retrieve_spheres(ray);
+				std::vector<maths::Sphere> childs_spheres;
+				childs_spheres = child.Retrieve_spheres(ray);
+
+				for (maths::Sphere sphere : childs_spheres)
+				{
+					spheres_to_check.push_back(sphere);
+				}
 			}
 		}
 	}
