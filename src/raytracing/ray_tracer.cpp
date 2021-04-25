@@ -48,21 +48,23 @@ bool RayTracer::ObjectIntersect(
 	float max_distance = 1000000.0f;
 	distance = max_distance;
 
+	//std::vector<maths::Sphere> spheres_to_check = scene_octree_.Retrieve_spheres(ray);
+	std::vector<maths::Sphere> spheres_to_check;
+	spheres_to_check.reserve(1);
+	scene_octree_.Retrieve_2(ray, spheres_to_check);
 
-	std::vector<maths::Sphere> spheres_to_check = scene_octree_.Retrieve_spheres(ray);
-
-	for (int i = 0; i < spheres_.size(); ++i) {
+	for (int i = 0; i < spheres_to_check.size(); ++i) {
 		hit_info.distance = max_distance;
 		// Only render intersection for the nearest sphere,
 		// if distance is smaller than previously
-		if (ray.IntersectSphere(spheres_[i], 
+		if (ray.IntersectSphere(spheres_to_check[i], 
 			hit_info.hit_position, 
 			hit_info.distance)
 			&& hit_info.distance < distance) {
 			//Set hit info value regarding the object that was hit
 			hit_info.normal = maths::Vector3f(
-							  hit_info.hit_position - spheres_[i].center()).Normalized();
-			hit_material = spheres_[i].material();
+							  hit_info.hit_position - spheres_to_check[i].center()).Normalized();
+			hit_material = spheres_to_check[i].material();
 			distance = hit_info.distance;
 		}
 	}
@@ -124,9 +126,9 @@ void RayTracer::Render() {
 	#pragma omp parallel for
 	for (int i = 0; i < height_; ++i) {
 		for (int j = 0; j < width_; ++j) {
-			float dir_x = (j + 0.5f) - width_ / 2.0f;
-			float dir_y = -(i + 0.5f) + height_ / 2.0f;
-			float dir_z = -height_ / (2.0 * tan(fov_ / 2.0f));
+			float dir_x = static_cast<float>(j + 0.5f) - width_ / 2.0f;
+			float dir_y = static_cast<float>(-(i + 0.5f)) + height_ / 2.0f;
+			float dir_z = -height_ / (2.0f * tan(fov_ / 2.0f));
 
 			maths::Vector3f ray_direction = maths::Vector3f(dir_x, dir_y, dir_z).Normalized();
 

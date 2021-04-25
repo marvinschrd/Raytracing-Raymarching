@@ -50,7 +50,6 @@ public:
 	//Set bases value and variable for raytracer rendering
 	void SetScene(
 		std::vector<maths::Sphere>& spheres,
-		std::vector<maths::Plane>& planes,
 		const PointLight light,
 		const int& height,
 		const int& width,
@@ -60,7 +59,6 @@ public:
 	)
 	{
 		spheres_ = spheres;
-		planes_ = planes;
 		light_ = light;
 		height_ = height;
 		width_ = width;

@@ -43,6 +43,8 @@ public :
 
 	std::vector<maths::Sphere> Retrieve_spheres( maths::Ray3 ray);
 
+	void Retrieve_2(maths::Ray3 ray, std::vector<maths::Sphere>& spheres_to_check);
+
 	bool has_split() const { return has_split_; }
 
 	std::vector<maths::Sphere> spheres() const { return spheres_; }

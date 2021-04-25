@@ -93,27 +93,65 @@ void Octree::Split()
 
 std::vector<maths::Sphere> Octree::Retrieve_spheres(maths::Ray3 ray)
 {
+//	auto begin = std::chrono::high_resolution_clock::now();
 	std::vector<maths::Sphere> spheres_to_check;
+	spheres_to_check.reserve(1);
 	
 	if(ray.IntersectAABB3(octree_aabb_))
 	{
 		for (maths::Sphere sphere : spheres_)
 		{
-			spheres_to_check.push_back(sphere);
+			if(spheres_to_check.size() == spheres_to_check.capacity())
+			{
+				spheres_to_check.reserve(spheres_to_check.size() * 2);
+			}
+			spheres_to_check.emplace_back(sphere);
 		}
 		if(has_split_)
 		{
 			for (Octree child : childs_)
 			{
 				std::vector<maths::Sphere> childs_spheres;
+				childs_spheres.reserve(1);
 				childs_spheres = child.Retrieve_spheres(ray);
 
 				for (maths::Sphere sphere : childs_spheres)
 				{
-					spheres_to_check.push_back(sphere);
+					if(spheres_to_check.size() == spheres_to_check.capacity())
+					{
+						spheres_to_check.reserve(spheres_to_check.size() * 2);
+					}
+					spheres_to_check.emplace_back(sphere);
 				}
 			}
 		}
 	}
+	/*auto end = std::chrono::high_resolution_clock::now();
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+	std::cout << " retrieving duration : " << duration.count() << " microsecondes " << "\n";*/
 	return spheres_to_check;
+}
+
+void Octree::Retrieve_2(maths::Ray3 ray, std::vector<maths::Sphere>& spheres_to_check)
+{
+	if(ray.IntersectAABB3(octree_aabb_))
+	{
+		for (maths::Sphere sphere : spheres_)
+		{
+			if (spheres_to_check.size() == spheres_to_check.capacity())
+			{
+				spheres_to_check.reserve(spheres_to_check.size() * 2);
+			}
+			spheres_to_check.emplace_back(sphere);
+		}
+		if(has_split())
+		{
+			for (Octree child : childs_)
+			{
+				child.Retrieve_2(ray, spheres_to_check);
+			}
+		}
+	}
+
+	
 }
