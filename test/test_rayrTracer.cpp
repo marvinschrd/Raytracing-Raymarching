@@ -165,7 +165,7 @@ TEST(Raytracing, Raytracing_ImageOutput)
 	maths::Sphere sphere5(75.0f, maths::Vector3f(0.0f, -84.0f, -10.0f));*/
 
 
-	maths::Sphere sphere1(1.0f, maths::Vector3f(-7.0f, 7.0f, -7.0f));
+	maths::Sphere sphere1(1.0f, maths::Vector3f(-5.0f, 7.0f, -7.0f));
 	maths::Sphere sphere3(1.0f, maths::Vector3f(7.0f, 7.0f, -7.0f));
 	maths::Sphere sphere4(1.0f, maths::Vector3f(8.0f, 0.0f, -5.0f));
 	maths::Sphere sphere5(1.0f, maths::Vector3f(0.0f, -84.0f, -10.0f));
@@ -173,8 +173,8 @@ TEST(Raytracing, Raytracing_ImageOutput)
 
 	sphere1.set_material(material_test);
 	sphere3.set_material(material_test2);
-	/*sphere4.set_material(material_test3);
-	sphere5.set_material(material_test4);*/
+	sphere4.set_material(material_test3);
+	sphere5.set_material(material_test4);
 
 
 
@@ -198,8 +198,7 @@ TEST(Raytracing, Raytracing_ImageOutput)
 	
 	spheres.push_back(sphere4);
 	spheres.push_back(sphere3);
-	spheres.push_back(sphere1);
-	spheres.push_back(sphere5);
+	
 
 	std::vector<maths::Plane> planes;
 
