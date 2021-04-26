@@ -51,6 +51,8 @@ public :
 
 	maths::AABB3 aabb() const { return octree_aabb_; }
 
+	std::string ToString();
+
 	
 private:
 	maths::AABB3 octree_aabb_ = {};

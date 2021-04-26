@@ -35,18 +35,20 @@ void Octree::Split()
 {
 	has_split_ = true;
 
-	/*float width = (octree_aabb_.extent()*2).Magnitude() / sqrt(3);
+	std::cout << "split \n";
+
+	/*float child_width = (octree_aabb_.extent()).Magnitude() / sqrt(3);
 	float parent_width = octree_aabb_.extent().x * 2;*/
-	float child_width = octree_aabb_.extent().x;
+	float child_width = octree_aabb_.extent().x/2;
 
 	maths::AABB3 first_aabb(maths::Vector3f(
 		octree_aabb_.bottom_left().x, octree_aabb_.bottom_left().y + child_width, octree_aabb_.bottom_left().z),
-		maths::Vector3f(octree_aabb_.center().x + child_width, octree_aabb_.center().y, octree_aabb_.center().z));
+		maths::Vector3f(octree_aabb_.center().x, octree_aabb_.center().y + child_width, octree_aabb_.center().z));
 	 Octree firstoctant(max_spheres_number_, max_depth_, first_aabb, depth_ + 1);
 
 	maths::AABB3 second_aabb(maths::Vector3f(
-		octree_aabb_.center().x, octree_aabb_.center().y + child_width, octree_aabb_.center().z + child_width),
-		maths::Vector3f(octree_aabb_.top_right().x + child_width, octree_aabb_.top_right().y, octree_aabb_.top_right().z+ child_width));
+		octree_aabb_.center().x, octree_aabb_.center().y, octree_aabb_.center().z + child_width),
+		maths::Vector3f(octree_aabb_.top_right().x, octree_aabb_.top_right().y, octree_aabb_.top_right().z + child_width));
 	Octree secondoctant(max_spheres_number_, max_depth_, second_aabb, depth_ + 1);
 		
 	maths::AABB3 third_aabb(octree_aabb_.bottom_left(), octree_aabb_.center());
@@ -77,9 +79,13 @@ void Octree::Split()
 
 	childs_.resize(8);
 	childs_ = { firstoctant,secondoctant,thirdoctant,fourthoctant,fifthoctant,sixthtoctant,seventhoctant,eightoctant };
+
+	std::cout << "parent octree center = " << octree_aabb_.center().z << "\n";
+	std::cout << "parent octree extent = " << octree_aabb_.extent().x << "\n";
 	
 	for (Octree child : childs_)
 	{
+		std::cout << "child center = " << child.aabb().center().z << "\n";
 		for(int i = 0; i < spheres_.size(); ++i)
 		{
 			if(AABBContainSphere(spheres_[i],child.aabb()))
@@ -155,3 +161,20 @@ void Octree::Retrieve_2(maths::Ray3 ray, std::vector<maths::Sphere>& spheres_to_
 
 	
 }
+
+//std::string Octree::ToString()
+//{
+//	/*std::string s;
+//	for (int i = 0; i < depth_; i++)
+//		s += "-";
+//
+//		s += "Node [" + octree_aabb_.bottom_left().ToString() + ", " + topRight.ToString() + ", contains " + std::to_string(child.size);
+//
+//	for (int i = 0; i < shpere.size(); i++)
+//		s += "Sphere[" + i + "] at " + sphere[i].position.ToString();
+//
+//	for (int i = 0; i < child.size; i++)
+//		s += child[i].ToString();
+//	
+//	return s;*/
+//}

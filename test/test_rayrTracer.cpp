@@ -159,16 +159,22 @@ TEST(Raytracing, Raytracing_ImageOutput)
 	maths::Plane plane(maths::Vector3f(0.0f, -20.0f, 0.0f), maths::Vector3f(0.0f, 1.0f, 0.0f));
 	plane.SetMaterial(material_test4);
 
-	maths::Sphere sphere1(6.0f, maths::Vector3f(-5.0f, 0.0f, -16.0f));
+	/*maths::Sphere sphere1(6.0f, maths::Vector3f(-5.0f, 0.0f, -16.0f));
 	maths::Sphere sphere3(2.0f, maths::Vector3f(4.0f, 0.0f, -8.0f));
 	maths::Sphere sphere4(3.0f, maths::Vector3f(8.0f, 0.0f, -5.0f));
-	maths::Sphere sphere5(75.0f, maths::Vector3f(0.0f, -84.0f, -10.0f));
+	maths::Sphere sphere5(75.0f, maths::Vector3f(0.0f, -84.0f, -10.0f));*/
+
+
+	maths::Sphere sphere1(1.0f, maths::Vector3f(-7.0f, 7.0f, -7.0f));
+	maths::Sphere sphere3(1.0f, maths::Vector3f(7.0f, 7.0f, -7.0f));
+	maths::Sphere sphere4(1.0f, maths::Vector3f(8.0f, 0.0f, -5.0f));
+	maths::Sphere sphere5(1.0f, maths::Vector3f(0.0f, -84.0f, -10.0f));
 
 
 	sphere1.set_material(material_test);
 	sphere3.set_material(material_test2);
-	sphere4.set_material(material_test3);
-	sphere5.set_material(material_test4);
+	/*sphere4.set_material(material_test3);
+	sphere5.set_material(material_test4);*/
 
 
 
@@ -176,12 +182,20 @@ TEST(Raytracing, Raytracing_ImageOutput)
 	PointLight light;
 	std::vector<maths::Sphere> spheres;
 	
-	/*for(int i = 0; i <=1000;++i)
+	/*for(int i = 0; i <=200;++i)
+	{
+		maths::Sphere sphere(0.1f, maths::Vector3f(-10.0f + i, 0.0f, -10.0f));
+		sphere.set_material(material_test);
+		spheres.push_back(sphere);
+	}
+
+	for (int i = 0; i <= 200; ++i)
 	{
 		maths::Sphere sphere(0.1f, maths::Vector3f(-10.0f + i, 0.0f, -10.0f));
 		sphere.set_material(material_test);
 		spheres.push_back(sphere);
 	}*/
+	
 	spheres.push_back(sphere4);
 	spheres.push_back(sphere3);
 	spheres.push_back(sphere1);
@@ -189,8 +203,8 @@ TEST(Raytracing, Raytracing_ImageOutput)
 
 	std::vector<maths::Plane> planes;
 
-	maths::AABB3 octree_aabb(maths::Vector3f(-30.0f, -30, 10), maths::Vector3f(30.0f, 30.0f, -30.0f));
-	Octree scene_octree(2, 5, octree_aabb, 0);
+	maths::AABB3 octree_aabb(maths::Vector3f(-10.0f, -10, -5), maths::Vector3f(10.0f, 10.0f, -15.0f));
+	Octree scene_octree(1, 2, octree_aabb, 0);
 
 	//Fill octree with the spheres
 	for (maths::Sphere sphere : spheres)
